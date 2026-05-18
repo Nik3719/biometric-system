@@ -10,7 +10,7 @@
     <div id="toast-container"></div>
 
     <nav id="main-nav" class="hidden">
-        <div class="nav-brand">🧬 BioSecure System</div>
+        <div class="nav-brand">BioSecure System</div>
         <div class="nav-user-block">
             <span id="user-display"></span>
             <button class="btn-logout" onclick="logout()">Выйти из системы</button>
@@ -108,13 +108,13 @@
                 <div id="file-preview-container" class="hidden">
                     <p style="font-size: 13px; margin-top: 10px; color: var(--text-muted);">Подготовка файла к отправке:</p>
                     <img id="file-preview" src="" alt="Preview">
-                    <button class="btn-success" style="max-width: 250px; margin: 10px auto 0 auto; display: block;" onclick="uploadBiometricData()">💾 Загрузить в PostgreSQL</button>
+                    <button class="btn-success" style="max-width: 250px; margin: 10px auto 0 auto; display: block;" onclick="uploadBiometricData()">💾 Загрузить</button>
                 </div>
             </div>
 
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
 
-            <h4 style="font-size: 14px; margin-bottom: 10px;">Сохраненные снимки в СУБД (Base64):</h4>
+            <h4 style="font-size: 14px; margin-bottom: 10px;">Сохраненная биометрия:</h4>
             <div id="bio-records-list" class="bio-grid">
                 </div>
         </div>
