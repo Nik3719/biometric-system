@@ -1,0 +1,77 @@
+:root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --success: #10b981;
+    --success-hover: #059669;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--background); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
+.hidden { display: none !important; }
+
+/* Карта-контейнер */
+.card { background: var(--surface); padding: 32px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); width: 100%; margin-bottom: 20px; }
+#view-login, #view-register { max-width: 420px; margin-top: 60px; }
+
+h2 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 6px; }
+h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.subtitle { color: var(--text-muted); text-align: center; font-size: 14px; margin-bottom: 24px; }
+.form-desc { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
+
+/* Кнопки и Инпуты */
+input { width: 100%; padding: 12px 16px; margin: 8px 0; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; background: #f1f5f9; transition: all 0.2s; }
+input:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+
+button { padding: 12px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-success { background: var(--success); color: white; margin-top: 8px; }
+.btn-success:hover { background: var(--success-hover); }
+.btn-logout { background: #64748b; color: white; width: auto; padding: 6px 14px; font-size: 13px; }
+.btn-logout:hover { background: #475569; }
+
+/* Навигация */
+nav { width: 100%; max-width: 1200px; display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; }
+.nav-brand { font-weight: 700; color: var(--primary); }
+.nav-user-block { display: flex; align-items: center; gap: 16px; font-size: 14px; font-weight: 500; }
+
+/* Разметка Личного кабинета */
+.dashboard-layout { display: flex; gap: 24px; width: 100%; max-width: 1200px; align-items: flex-start; }
+.form-card { flex: 1; max-width: 340px; }
+.table-card { flex: 3; }
+
+/* Таблица реестра */
+.table-header-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 16px; }
+.table-header-tools input { max-width: 320px; margin: 0; background: #fff; }
+.table-wrapper { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
+th { background: #f8fafc; font-weight: 600; color: var(--text-muted); }
+code { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+
+/* Пагинация */
+.pagination-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+.btn-page { width: auto; padding: 6px 12px; background: #fff; border: 1px solid var(--border); color: var(--text); }
+.btn-page:hover:not(:disabled) { background: #f1f5f9; }
+.btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.auth-switch { text-align: center; font-size: 14px; margin-top: 16px; color: var(--text-muted); }
+.auth-switch a { color: var(--primary); text-decoration: none; font-weight: 500; }
+
+/* Всплывающие уведомления (Toasts) [cite: 54] */
+#toast-container { position: fixed; top: 24px; right: 24px; z-index: 9999; }
+.toast { background: #1e293b; color: white; padding: 14px 24px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); font-size: 14px; font-weight: 500; animation: slideIn 0.2s ease-out; }
+.toast.error { background: var(--danger); }
+.toast.success { background: var(--success); }
+
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.animate-fade { animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

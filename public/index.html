@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система хранения биометрических данных</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <nav id="main-nav" class="hidden">
+        <div class="nav-brand">🧬 BioSecure System v3.0 (3НФ)</div>
+        <div class="nav-user-block">
+            <span id="user-display"></span>
+            <button class="btn-logout" onclick="logout()">Выйти из системы</button>
+        </div>
+    </nav>
+
+    <div id="view-login" class="view card animate-fade">
+        <h2>Вход оператора</h2>
+        <p class="subtitle">Управление биометрическими архивами</p>
+        <div class="form-group">
+            <input type="text" id="login-username" placeholder="Имя пользователя" required>
+            <input type="password" id="login-password" placeholder="Пароль" required>
+            <button class="btn-primary" onclick="login()">Войти</button>
+        </div>
+        <p class="auth-switch">Впервые в системе? <a href="#register">Создать аккаунт</a></p>
+    </div>
+
+    <div id="view-register" class="view card hidden animate-fade">
+        <h2>Регистрация в системе</h2>
+        <p class="subtitle">Создание учетной записи сотрудника</p>
+        <div class="form-group">
+            <input type="text" id="reg-username" placeholder="Имя пользователя" required>
+            <input type="email" id="reg-email" placeholder="Электронная почта (Email)" required>
+            <input type="password" id="reg-password" placeholder="Пароль" required>
+            <button class="btn-primary" onclick="register()">Зарегистрироваться</button>
+        </div>
+        <p class="auth-switch">Уже есть аккаунт? <a href="#login">Войти в систему</a></p>
+    </div>
+
+    <div id="view-dashboard" class="view hidden">
+        <div class="dashboard-layout">
+            
+            <div class="card form-card">
+                <h3>Регистрация субъекта</h3>
+                <p class="form-desc">Внесение персональных данных человека в биометрический реестр</p>
+                <input type="text" id="p-first" placeholder="Имя">
+                <input type="text" id="p-last" placeholder="Фамилия">
+                <input type="text" id="p-national" placeholder="Идентификационный номер (ID)">
+                <button class="btn-success" onclick="addPerson()">Внести в базу</button>
+            </div>
+
+            <div class="card table-card">
+                <div class="table-header-tools">
+                    <h3>Реестр субъектов биометрии</h3>
+                    <input type="text" id="search-input" placeholder="🔍 Быстрый поиск по ФИО или National ID..." oninput="searchPersons()">
+                </div>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Фамилия</th>
+                                <th>National ID</th>
+                                <th style="text-align: right;">Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="persons-table-body">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-bar">
+                    <button id="prev-btn" class="btn-page" onclick="changePage(-1)">◀ Назад</button>
+                    <span id="page-info">Страница 1 из 1</span>
+                    <button id="next-btn" class="btn-page" onclick="changePage(1)">Вперед ▶</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
