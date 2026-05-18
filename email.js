@@ -28,7 +28,7 @@ export async function sendEmail(to, subject, htmlContent) {
         console.log(`Письмо через Gmail успешно отправлено на ${to}. ID: ${info.messageId}`);
         return true;
     } catch (error) {
-        console.error('❌ Ошибка SMTP Gmail:', error.message);
+        console.error('Ошибка SMTP Gmail:', error.message);
         return false;
     }
 }

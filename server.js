@@ -1,10 +1,11 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pool from './db.js';
-import { sendEmail } from './email.js'; // Подключаем наш новый почтовый модуль
+// import { sendEmail } from './email.js'; // Подключаем наш новый почтовый модуль (закомментировано для локальной разработки)
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -75,7 +76,8 @@ app.post('/api/auth/register', async (req, res) => {
             </div>
         `;
 
-        sendEmail(newUser.email, 'Добро пожаловать в Биометрическую Систему', welcomeHtml);
+        // sendEmail(newUser.email, 'Добро пожаловать в Биометрическую Систему', welcomeHtml)
+        //     .catch(err => console.error('Ошибка отправки приветственного письма:', err.message));
 
         res.status(201).json({ message: 'Пользователь успешно зарегистрирован', user: newUser });
     } catch (err) {
@@ -108,6 +110,11 @@ app.post('/api/auth/login', async (req, res) => {
         res.status(500).json({ error: 'Внутренняя ошибка сервера при попытке входа.' });
     }
 });
+
+// Утилита генерации уникального идентификационного номера субъекта
+function generateNationalId() {
+    return `ID${Date.now().toString().slice(-6)}${crypto.randomBytes(2).toString('hex')}`;
+}
 
 // --- API CRUD ОПЕРАЦИЙ ДЛЯ СУБЪЕКТОВ (PERSONS) С ПАГИНАЦИЕЙ И ФИЛЬТРАЦИЕЙ ---
 
@@ -142,57 +149,42 @@ app.get('/api/persons', authenticateToken, async (req, res) => {
     }
 });
 
-// Добавление нового субъекта (National ID генерируется базой автоматически)
+// Добавление нового субъекта (national_id генерируется автоматически, если не задан)
 app.post('/api/persons', authenticateToken, async (req, res) => {
-    const { first_name, last_name, phone, email } = req.body;
+    const { first_name, last_name, national_id } = req.body;
     try {
-        // Исключили national_id из INSERT, СУБД подставит дефолтное значение из сиквенса
+        console.log('Добавление субъекта: body=', req.body);
+        const generatedId = national_id || generateNationalId();
+        console.log('Добавление субъекта: generated national_id=', generatedId);
         const result = await pool.query(
-            'INSERT INTO persons (first_name, last_name, phone, email) VALUES ($1, $2, $3, $4) RETURNING *',
-            [first_name, last_name, phone, email]
+            'INSERT INTO persons (first_name, last_name, national_id) VALUES ($1, $2, $3) RETURNING *',
+            [first_name, last_name, generatedId]
         );
         
         const newPerson = result.rows[0];
-
-        // --- АВТОМАТИЧЕСКАЯ ОТПРАВКА УВЕДОМЛЕНИЯ НА EMAIL ЧЕРЕЗ GMAIL ---
-        if (newPerson.email) {
-            const emailTemplate = `
-                <div style="font-family: sans-serif; max-width: 600px; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px;">
-                    <h2 style="color: #0f172a;">Уведомление биометрической СУБД</h2>
-                    <p>Уважаемый(а) <b>${newPerson.first_name} ${newPerson.last_name}</b>,</p>
-                    <p>Ваша учетная карточка была успешно зарегистрирована в Единой системе контроля доступа.</p>
-                    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
-                    <p style="font-size: 14px; color: #475569;">
-                        Ваш автоматически сгенерированный уникальный <b>National ID:</b> 
-                        <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 14px; font-weight: bold;">
-                            ${newPerson.national_id}
-                        </code>
-                    </p>
-                    <p style="font-size: 12px; color: #94a3b8; margin-top: 25px;">Это автоматическое системное уведомление. Отвечать на него не нужно.</p>
-                </div>
-            `;
-
-            // Отправляем асинхронно, чтобы моментально вернуть HTTP-ответ на фронтенд
-            sendEmail(newPerson.email, 'Регистрация в системе контроля доступа', emailTemplate);
-        }
-
         res.status(201).json(newPerson);
     } catch (err) {
-        console.error('Ошибка добавления субъекта:', err.message);
-        res.status(400).json({ error: 'Не удалось сохранить субъекта. Проверьте уникальность контактов.' });
+        console.error('Ошибка добавления субъекта:', err.code || err.message, err.detail || '');
+        if (err.code === '23502') { // not_null_violation
+            return res.status(400).json({ error: 'Ошибка: обязательное поле отсутствует при сохранении субъекта.' });
+        }
+        if (err.code === '57P01' || /timeout/i.test(err.message)) {
+            return res.status(503).json({ error: 'Ошибка соединения с базой данных (таймаут). Попробуйте позже.' });
+        }
+        res.status(400).json({ error: 'Не удалось сохранить субъекта. Проверьте данные запроса.' });
     }
 });
 
 app.put('/api/persons/:id', authenticateToken, async (req, res) => {
-    const { first_name, last_name, phone, email } = req.body;
+    const { first_name, last_name } = req.body;
     try {
         if (!first_name || !last_name) {
             return res.status(400).json({ error: 'Необходимо заполнить имя и фамилию.' });
         }
         
         const result = await pool.query(
-            'UPDATE persons SET first_name = $1, last_name = $2, phone = $3, email = $4 WHERE id = $5 RETURNING *',
-            [first_name, last_name, phone, email, req.params.id]
+            'UPDATE persons SET first_name = $1, last_name = $2 WHERE id = $3 RETURNING *',
+            [first_name, last_name, req.params.id]
         );
         
         if (result.rows.length === 0) {

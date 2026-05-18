@@ -121,13 +121,17 @@ async function loadPersonsRegistry() {
 
         response.data.forEach(person => {
             const row = document.createElement('tr');
+            const safeFirst = String(person.first_name || '').replace(/'/g, "\\'");
+            const safeLast = String(person.last_name || '').replace(/'/g, "\\'");
+            const safeNationalId = String(person.national_id || '').replace(/'/g, "\\'");
+
             row.innerHTML = `
                 <td><b>${person.first_name}</b></td>
                 <td>${person.last_name}</td>
                 <td><code>${person.national_id}</code></td>
                 <td style="text-align: right; display: flex; gap: 8px; justify-content: flex-end;">
-                    <button style="width:auto; background:#6b7280; padding: 6px 10px;" onclick="openEditPersonModal('${person.id}', '${person.first_name}', '${person.last_name}', '${person.national_id}')">Редактировать</button>
-                    <button style="width:auto; background:var(--success); padding: 6px 10px;" onclick="openBioModal('${person.id}', '${person.first_name}', '${person.last_name}')">Биометрия</button>
+                    <button style="width:auto; background:#6b7280; padding: 6px 10px;" onclick="openEditPersonModal('${person.id}', '${safeFirst}', '${safeLast}', '${safeNationalId}')">Редактировать</button>
+                    <button style="width:auto; background:var(--success); padding: 6px 10px;" onclick="openBioModal('${person.id}', '${safeFirst}', '${safeLast}')">Биометрия</button>
                     <button style="width:auto; background:var(--danger); padding: 6px 10px;" onclick="deletePerson('${person.id}')">Удалить</button>
                 </td>
             `;
@@ -146,18 +150,21 @@ async function loadPersonsRegistry() {
 async function addPerson() {
     const first_name = document.getElementById('p-first').value;
     const last_name = document.getElementById('p-last').value;
-    const national_id = document.getElementById('p-national').value;
+
+    if (!first_name || !last_name) {
+        showToast('Имя и фамилия обязательны для регистрации субъекта.', 'error');
+        return;
+    }
 
     try {
         await apiFetch('/api/persons', {
             method: 'POST',
-            body: JSON.stringify({ first_name, last_name, national_id })
+            body: JSON.stringify({ first_name, last_name })
         });
         showToast('Данные субъекта успешно внесены.');
         // Очистка формы
         document.getElementById('p-first').value = '';
         document.getElementById('p-last').value = '';
-        document.getElementById('p-national').value = '';
         loadPersonsRegistry();
     } catch (err) {
         showToast(err.message, 'error'); // [cite: 54]
@@ -181,7 +188,7 @@ function openEditPersonModal(id, firstName, lastName, nationalId) {
     document.getElementById('edit-person-id').value = id;
     document.getElementById('edit-first-name').value = firstName;
     document.getElementById('edit-last-name').value = lastName;
-    document.getElementById('edit-national-id').value = nationalId;
+    document.getElementById('edit-national-id').value = nationalId || '';
     document.getElementById('edit-modal').classList.remove('hidden');
 }
 
@@ -197,7 +204,6 @@ async function saveEditPerson() {
     const id = document.getElementById('edit-person-id').value;
     const first_name = document.getElementById('edit-first-name').value;
     const last_name = document.getElementById('edit-last-name').value;
-    const national_id = document.getElementById('edit-national-id').value;
 
     if (!first_name || !last_name) {
         showToast('Имя и фамилия не могут быть пустыми.', 'error');
@@ -207,7 +213,7 @@ async function saveEditPerson() {
     try {
         await apiFetch(`/api/persons/${id}`, {
             method: 'PUT',
-            body: JSON.stringify({ first_name, last_name, national_id })
+            body: JSON.stringify({ first_name, last_name })
         });
         showToast('Данные субъекта успешно обновлены.');
         closeEditModal();

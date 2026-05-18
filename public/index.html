@@ -48,7 +48,7 @@
                 <p class="form-desc">Внесение персональных данных человека в биометрический реестр</p>
                 <input type="text" id="p-first" placeholder="Имя">
                 <input type="text" id="p-last" placeholder="Фамилия">
-                <input type="text" id="p-national" placeholder="Идентификационный номер (ID)">
+                <p style="font-size: 13px; color: var(--text-muted); margin: 8px 0 0;">ID будет сгенерирован автоматически системой.</p>
                 <button class="btn-success" onclick="addPerson()">Внести в базу</button>
             </div>
 
@@ -177,9 +177,9 @@
                 <input type="text" id="edit-last-name" placeholder="Введите фамилию">
                 
                 <label style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 16px;">ID</label>
-                <input type="text" id="edit-national-id" placeholder="Введите ID">
+                <input type="text" id="edit-national-id" placeholder="ID генерируется автоматически" disabled>
                 
-                <button class="btn-success" style="margin-top: 20px;" onclick="saveEditPerson()">✓ Сохранить изменения</button>
+                <button class="btn-success" style="margin-top: 20px;" onclick="saveEditPerson()">Сохранить изменения</button>
                 <button class="btn-page" style="margin-top: 8px; background: #e2e8f0; color: var(--text);" onclick="closeEditModal()">Отменить</button>
             </div>
         </div>
