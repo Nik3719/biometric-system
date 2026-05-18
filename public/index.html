@@ -55,7 +55,7 @@
             <div class="card table-card">
                 <div class="table-header-tools">
                     <h3>Реестр субъектов биометрии</h3>
-                    <input type="text" id="search-input" placeholder="🔍 Быстрый поиск по ФИО или ID..." oninput="searchPersons()">
+                    <input type="text" id="search-input" placeholder="Быстрый поиск по ФИО или ID..." oninput="searchPersons()">
                 </div>
                 
                 <div class="table-wrapper">
@@ -74,9 +74,9 @@
                 </div>
 
                 <div class="pagination-bar">
-                    <button id="prev-btn" class="btn-page" onclick="changePage(-1)">◀ Назад</button>
+                    <button id="prev-btn" class="btn-page" onclick="changePage(-1)">Назад</button>
                     <span id="page-info">Страница 1 из 1</span>
-                    <button id="next-btn" class="btn-page" onclick="changePage(1)">Вперед ▶</button>
+                    <button id="next-btn" class="btn-page" onclick="changePage(1)">Вперед</button>
                 </div>
             </div>
 
@@ -86,7 +86,7 @@
         <div class="modal-content card animate-fade">
             <div class="modal-header">
                 <h3 id="modal-title">Биометрический профиль субъекта</h3>
-                <button class="btn-close" onclick="closeBioModal()">✕</button>
+                <button class="btn-close" onclick="closeBioModal()">Закрыть</button>
             </div>
             <p class="form-desc">Импорт оригинальных снимков отпечатков пальцев (датасет SOCOFing) или сканов сетчатки глаза в базу данных.</p>
             
@@ -101,14 +101,14 @@
                 </div>
                 
                 <label class="file-input-label">
-                    <span>📁 Выбрать файл снимка (.BMP, .PNG, .JPG)</span>
+                    <span>Выбрать файл снимка (.BMP, .PNG, .JPG)</span>
                     <input type="file" id="bio-file-input" accept="image/*" onchange="handleFileSelect(event)">
                 </label>
 
                 <div id="file-preview-container" class="hidden">
                     <p style="font-size: 13px; margin-top: 10px; color: var(--text-muted);">Подготовка файла к отправке:</p>
                     <img id="file-preview" src="" alt="Preview">
-                    <button class="btn-success" style="max-width: 250px; margin: 10px auto 0 auto; display: block;" onclick="uploadBiometricData()">💾 Загрузить</button>
+                    <button class="btn-success" style="max-width: 250px; margin: 10px auto 0 auto; display: block;" onclick="uploadBiometricData()">Загрузить</button>
                 </div>
             </div>
 
@@ -124,7 +124,7 @@
     <div id="view-biometric-detail" class="view hidden">
         <div class="detail-container">
             <div class="detail-header">
-                <button class="btn-back" onclick="backToBioModal()">◀ Назад</button>
+                <button class="btn-back" onclick="backToBioModal()">Назад</button>
                 <h2>Информация о биометрии</h2>
                 <div style="width: 40px;"></div>
             </div>
@@ -152,8 +152,8 @@
                 </div>
 
                 <div class="detail-actions">
-                    <button class="btn-primary" onclick="downloadBiometric()">💾 Скачать изображение</button>
-                    <button class="btn-danger" style="background: var(--danger);" onclick="deleteDetailBiometric()">🗑️ Удалить запись</button>
+                    <button class="btn-primary" onclick="downloadBiometric()">Скачать изображение</button>
+                    <button class="btn-danger" style="background: var(--danger);" onclick="deleteDetailBiometric()">Удалить запись</button>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
         <div class="modal-content card animate-fade">
             <div class="modal-header">
                 <h3>Редактирование данных субъекта</h3>
-                <button class="btn-close" onclick="closeEditModal()">✕</button>
+                <button class="btn-close" onclick="closeEditModal()">Закрыть</button>
             </div>
             <p class="form-desc">Изменение персональных данных в реестре биометрии</p>
             

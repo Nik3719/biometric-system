@@ -158,7 +158,7 @@ app.post('/api/persons', authenticateToken, async (req, res) => {
         if (newPerson.email) {
             const emailTemplate = `
                 <div style="font-family: sans-serif; max-width: 600px; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px;">
-                    <h2 style="color: #0f172a;">🔐 Уведомление биометрической СУБД</h2>
+                    <h2 style="color: #0f172a;">Уведомление биометрической СУБД</h2>
                     <p>Уважаемый(а) <b>${newPerson.first_name} ${newPerson.last_name}</b>,</p>
                     <p>Ваша учетная карточка была успешно зарегистрирована в Единой системе контроля доступа.</p>
                     <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
@@ -288,4 +288,4 @@ app.get(/.*/, (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Сервер запущен на порту ${PORT}`));
+app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
