@@ -1,11 +1,11 @@
 name: Biometric System CI/CD Pipeline
 
-# Триггер: запускать пайплайн при каждом пуше в ветку main
+# Триггер: теперь слушаем ветку master
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-and-test:
