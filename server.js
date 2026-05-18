@@ -30,6 +30,19 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// Мидлварь для проверки прав доступа (Авторизация)
+function requireRole(allowedRoles) {
+    return (req, res, next) => {
+        // req.user заполнился ранее в мидлвари authenticateToken
+        if (!req.user || !allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({ 
+                error: 'Доступ запрещен. У вашего аккаунта недостаточно прав для выполнения этого действия.' 
+            });
+        }
+        next(); // Роль совпала, пропускаем к данным
+    };
+}
+
 // --- МАРШРУТЫ АУТЕНТИФИКАЦИИ [cite: 34] ---
 
 // Регистрация нового пользователя
@@ -125,6 +138,29 @@ app.post('/api/persons', authenticateToken, async (req, res) => {
     }
 });
 
+app.put('/api/persons/:id', authenticateToken, async (req, res) => {
+    const { first_name, last_name, national_id } = req.body;
+    try {
+        if (!first_name || !last_name) {
+            return res.status(400).json({ error: 'Необходимо заполнить имя и фамилию.' });
+        }
+        
+        const result = await pool.query(
+            'UPDATE persons SET first_name = $1, last_name = $2, national_id = $3 WHERE id = $4 RETURNING *',
+            [first_name, last_name, national_id, req.params.id]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Субъект не найден.' });
+        }
+        
+        res.json({ message: 'Данные субъекта успешно обновлены.', person: result.rows[0] });
+    } catch (err) {
+        console.error('Ошибка обновления субъекта:', err.message); // [cite: 40]
+        res.status(400).json({ error: 'Не удалось обновить данные субъекта.' });
+    }
+});
+
 app.delete('/api/persons/:id', authenticateToken, async (req, res) => {
     try {
         await pool.query('DELETE FROM persons WHERE id = $1', [req.params.id]);
@@ -168,6 +204,42 @@ app.post('/api/biometrics', authenticateToken, async (req, res) => {
 
 // Перенаправление всех остальных GET-запросов на индексный файл SPA приложения [cite: 43]
 // Стало (совместимо с Express 5):
+// --- ДОПОЛНИТЕЛЬНЫЕ API ДЛЯ РАБОТЫ С КАРТИНКАМИ БИОМЕТРИИ ---
+
+// 1. Получить все биометрические снимки конкретного субъекта
+app.get('/api/biometrics/:person_id', authenticateToken, async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT br.id, br.type_id, bt.name as type_name, br.image_base64, br.hash_sum, br.captured_at 
+             FROM biometric_records br
+             JOIN biometric_types bt ON br.type_id = bt.id
+             WHERE br.person_id = $1 
+             ORDER BY br.captured_at DESC`,
+            [req.params.person_id]
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Ошибка получения биометрических снимков:', err.message);
+        res.status(500).json({ error: 'Не удалось загрузить биометрический профиль субъекта.' });
+    }
+});
+
+// 2. Удалить конкретный снимок биометрии (с фиксацией в аудите)
+app.delete('/api/biometrics/:id', authenticateToken, async (req, res) => {
+    try {
+        // Фиксируем операцию удаления в журнале аудита безопасности (Требование лабы)
+        await pool.query(
+            'INSERT INTO access_logs (user_id, action, target_record_id, ip_address) VALUES ($1, $2, $3, $4)',
+            [req.user.id, 'DELETE_BIOMETRIC_RECORD', req.params.id, req.ip]
+        );
+        
+        await pool.query('DELETE FROM biometric_records WHERE id = $1', [req.params.id]);
+        res.json({ message: 'Снимок успешно удален из базы данных.' });
+    } catch (err) {
+        console.error('Ошибка удаления биометрической записи:', err.message);
+        res.status(500).json({ error: 'Не удалось удалить снимок из архива.' });
+    }
+});
 app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

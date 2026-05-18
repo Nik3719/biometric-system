@@ -82,7 +82,110 @@
 
         </div>
     </div>
+    <div id="bio-modal" class="modal-overlay hidden">
+        <div class="modal-content card animate-fade">
+            <div class="modal-header">
+                <h3 id="modal-title">Биометрический профиль субъекта</h3>
+                <button class="btn-close" onclick="closeBioModal()">✕</button>
+            </div>
+            <p class="form-desc">Импорт оригинальных снимков отпечатков пальцев (датасет SOCOFing) или сканов сетчатки глаза в базу данных.</p>
+            
+            <div class="bio-upload-zone">
+                <div style="margin-bottom: 12px; text-align: left;">
+                    <label style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Тип биометрии:</label>
+                    <select id="bio-type-select" style="margin: 4px 0 12px 0;">
+                        <option value="2">Fingerprint (Отпечаток пальца SOCOFing)</option>
+                        <option value="1">Face ID (Фотография лица)</option>
+                        <option value="3">Iris (Сканирование сетчатки)</option>
+                    </select>
+                </div>
+                
+                <label class="file-input-label">
+                    <span>📁 Выбрать файл снимка (.BMP, .PNG, .JPG)</span>
+                    <input type="file" id="bio-file-input" accept="image/*" onchange="handleFileSelect(event)">
+                </label>
+
+                <div id="file-preview-container" class="hidden">
+                    <p style="font-size: 13px; margin-top: 10px; color: var(--text-muted);">Подготовка файла к отправке:</p>
+                    <img id="file-preview" src="" alt="Preview">
+                    <button class="btn-success" style="max-width: 250px; margin: 10px auto 0 auto; display: block;" onclick="uploadBiometricData()">💾 Загрузить в PostgreSQL</button>
+                </div>
+            </div>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
+
+            <h4 style="font-size: 14px; margin-bottom: 10px;">Сохраненные снимки в СУБД (Base64):</h4>
+            <div id="bio-records-list" class="bio-grid">
+                </div>
+        </div>
+    </div>
+
+    <!-- Страница просмотра деталей биометрии -->
+    <div id="view-biometric-detail" class="view hidden">
+        <div class="detail-container">
+            <div class="detail-header">
+                <button class="btn-back" onclick="backToBioModal()">◀ Назад</button>
+                <h2>Информация о биометрии</h2>
+                <div style="width: 40px;"></div>
+            </div>
+
+            <div class="detail-content">
+                <div class="detail-section">
+                    <div class="detail-info">
+                        <div class="info-group">
+                            <label>Тип биометрии:</label>
+                            <p id="detail-type-name">-</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Дата захвата:</label>
+                            <p id="detail-captured-at">-</p>
+                        </div>
+                        <div class="info-group">
+                            <label>Контрольная сумма (Hash):</label>
+                            <p id="detail-hash-sum" style="font-family: monospace; font-size: 12px; word-break: break-all;">-</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-image">
+                        <img id="detail-bio-image" src="" alt="Биометрия" style="width: 100%; max-width: 400px; border-radius: 8px; border: 1px solid var(--border);">
+                    </div>
+                </div>
+
+                <div class="detail-actions">
+                    <button class="btn-primary" onclick="downloadBiometric()">💾 Скачать изображение</button>
+                    <button class="btn-danger" style="background: var(--danger);" onclick="deleteDetailBiometric()">🗑️ Удалить запись</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования субъекта -->
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="modal-content card animate-fade">
+            <div class="modal-header">
+                <h3>Редактирование данных субъекта</h3>
+                <button class="btn-close" onclick="closeEditModal()">✕</button>
+            </div>
+            <p class="form-desc">Изменение персональных данных в реестре биометрии</p>
+            
+            <div class="form-group">
+                <input type="hidden" id="edit-person-id">
+                <label style="font-size: 13px; font-weight: 600; color: var(--text-muted);">Имя:</label>
+                <input type="text" id="edit-first-name" placeholder="Введите имя">
+                
+                <label style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 16px;">Фамилия:</label>
+                <input type="text" id="edit-last-name" placeholder="Введите фамилию">
+                
+                <label style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 16px;">National ID:</label>
+                <input type="text" id="edit-national-id" placeholder="Введите ID">
+                
+                <button class="btn-success" style="margin-top: 20px;" onclick="saveEditPerson()">✓ Сохранить изменения</button>
+                <button class="btn-page" style="margin-top: 8px; background: #e2e8f0; color: var(--text);" onclick="closeEditModal()">Отменить</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
+
 </body>
 </html>

@@ -75,3 +75,83 @@ code { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: m
 @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 .animate-fade { animation: fadeIn 0.3s ease-in-out; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Модальное оверлей-окно */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+.modal-content { max-width: 650px; width: 100%; max-height: 85vh; overflow-y: auto; margin-bottom: 0; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.btn-close { width: auto; background: none; color: var(--text-muted); font-size: 22px; padding: 0; margin: 0; }
+.btn-close:hover { color: var(--text); }
+
+/* Интерактивная зона импорта */
+.bio-upload-zone { background: #f8fafc; border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; margin-top: 12px; }
+.file-input-label { display: inline-block; background: var(--primary); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 4px; font-size: 14px; transition: background 0.2s; }
+.file-input-label:hover { background: var(--primary-hover); }
+#bio-file-input { display: none; } /* Скрываем уродливый дефолтный инпут */
+
+#file-preview { max-width: 140px; max-height: 140px; object-fit: contain; margin: 12px auto; display: block; border: 1px solid var(--border); border-radius: 6px; background: white; padding: 4px; }
+
+/* Сетка отображения отпечатков из базы */
+.bio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px; margin-top: 12px; }
+.bio-item { background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+.bio-item img { width: 100%; height: 110px; object-fit: contain; background: white; border-radius: 6px; border: 1px solid var(--border); }
+.bio-item .bio-meta { font-size: 11px; color: var(--text-muted); margin-top: 6px; text-align: center; width: 100%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+.btn-bio-delete { background: var(--danger); color: white; font-size: 11px; padding: 4px 8px; margin-top: 8px; border-radius: 4px; width: 100%; font-weight: 600; }
+.btn-bio-delete:hover { background: var(--danger-hover); }
+
+/* Страница просмотра деталей биометрии */
+#view-biometric-detail { width: 100%; max-width: 1200px; }
+
+.detail-container { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+
+.detail-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--border); }
+.detail-header h2 { margin: 0; flex: 1; text-align: center; }
+.btn-back { width: auto; padding: 8px 16px; background: #64748b; color: white; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+.btn-back:hover { background: #475569; }
+
+.detail-content { padding: 32px; }
+
+.detail-section { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 32px; }
+.detail-info { flex: 1; min-width: 250px; }
+.detail-image { flex: 1; min-width: 250px; display: flex; justify-content: center; align-items: center; }
+
+.info-group { margin-bottom: 20px; }
+.info-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.info-group p { font-size: 16px; color: var(--text); font-weight: 500; }
+
+.detail-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.detail-actions button { flex: 1; min-width: 200px; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover { background: var(--danger-hover); }
+
+/* Интерактивная биометрия в сетке - добавляем курсор для клика */
+.bio-item { cursor: pointer; transition: all 0.2s; }
+.bio-item:hover { background: #e0e7ff; border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1); }
+
+/* Селект для опций */
+select {
+    width: 100%;
+    padding: 12px 16px;
+    margin: 8px 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    background: #f1f5f9;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+@media (max-width: 768px) {
+    .detail-section { flex-direction: column; gap: 24px; }
+    .detail-header { flex-direction: column; gap: 16px; }
+    .detail-header h2 { text-align: center; }
+    .detail-actions { flex-direction: column; }
+    .detail-actions button { min-width: auto; }
+}
