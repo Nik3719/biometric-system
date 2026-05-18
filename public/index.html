@@ -55,7 +55,7 @@
             <div class="card table-card">
                 <div class="table-header-tools">
                     <h3>Реестр субъектов биометрии</h3>
-                    <input type="text" id="search-input" placeholder="🔍 Быстрый поиск по ФИО или National ID..." oninput="searchPersons()">
+                    <input type="text" id="search-input" placeholder="🔍 Быстрый поиск по ФИО или ID..." oninput="searchPersons()">
                 </div>
                 
                 <div class="table-wrapper">
@@ -64,7 +64,7 @@
                             <tr>
                                 <th>Имя</th>
                                 <th>Фамилия</th>
-                                <th>National ID</th>
+                                <th>ID</th>
                                 <th style="text-align: right;">Действия</th>
                             </tr>
                         </thead>
@@ -176,7 +176,7 @@
                 <label style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 16px;">Фамилия:</label>
                 <input type="text" id="edit-last-name" placeholder="Введите фамилию">
                 
-                <label style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 16px;">National ID:</label>
+                <label style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 16px;">ID</label>
                 <input type="text" id="edit-national-id" placeholder="Введите ID">
                 
                 <button class="btn-success" style="margin-top: 20px;" onclick="saveEditPerson()">✓ Сохранить изменения</button>
