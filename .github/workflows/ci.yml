@@ -1,0 +1,28 @@
+name: Biometric System CI/CD Pipeline
+
+# Триггер: запускать пайплайн при каждом пуше в ветку main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Инициализация репозитория (Checkout)
+      uses: actions/checkout@v4
+
+    - name: Настройка среды Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Установка зависимостей проекта
+      run: npm install
+
+    - name: Автоматический запуск юнит-тестов безопасности
+      run: npm test
